@@ -3,7 +3,7 @@
 ##Variables update as to fit your scenario
 portFORK=8282
 portTHREAD=8283
-testing=1
+testing=0
 
 head -c 10000 < /dev/urandom > big
 head -c 1000 < /dev/urandom > small 
@@ -11,7 +11,7 @@ head -c 1000 < /dev/urandom > small
 if [[ "$testing" == "0" ]]; then
     ## Use for Data collection
     echo "Real Data Collection"
-    CONCURRENCY=60
+    CONCURRENCY=20
     REPEAT=32
 else
     ## Use for _TESTING__
