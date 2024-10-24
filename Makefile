@@ -4,10 +4,10 @@ all: serverthread serverfork
 
 
 serverthread.o: serverthread.cpp
-	$(CXX) -Wall -c serverthread.cpp -I.
+	$(CXX) -std=c++17 -Wall -c -O2 serverthread.cpp -I.
 
 serverfork.o: serverfork.cpp
-	$(CXX) -Wall -c serverfork.cpp -I.
+	$(CXX) -std=c++17 -Wall -c  -O2 serverfork.cpp -I.
 
 
 serverfork: serverfork.o 
