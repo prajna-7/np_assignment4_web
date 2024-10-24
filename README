@@ -1,58 +1,85 @@
-**** README ****
-Supporting files for np_assignment4_web assignment.
-Patrik.Arlos@bth.se (2021/2022)
 
-This contains the base files for the Web performance assignment.
+# Forked vs Threaded Web Server - Performance Analysis
 
-Files
-* serverfork.cpp	- Fork server base.
-* serverthread.cpp	- Thread server base
-* Makefile		- Build both solutions
-* dcollect.sh		- Bash script to collect statistical data to be used in report.
-* dcollect.p		- GNUplot used to generate graph, used by dcollect.sh
+## Project Overview
+This project compares the performance of two types of server architectures—**forked** and **threaded**—in handling concurrent client requests. The aim is to determine the optimal server type for various levels of concurrency, focusing on throughput (requests per second) and stability.
 
-The dcollect.sh and dcollect.p are to be used to collect the data that you will use in your report.
-They will also be used to test that your solutions works.
+The project includes:
+- A **forked server** implementation (`serverfork.cpp`).
+- A **threaded server** implementation (`serverthread.cpp`).
+- A **data collection** script (`dcollect.sh`) to perform load testing.
+- Performance analysis using **linear regression** and **Support Vector Regression (SVR)** for predictive modeling (`regression_analysis.py`).
 
-The script, dcollect.sh, has three relevant variables; portFORK, portTHREAD and testing.
-portFORK and portTHREAD are to match the port number where your servers are listening too. 
-We use testing to determine if the script runs in a test mode, or in the real data collection mode.
-The difference is in the amount of data that is collected. In the real mode it will collect
-60*32 samples, while in test mode only 5*10 samples. Note that your submission should of course be
-using the real mode.
+## Directory Structure
+```
+.
+├── serverfork.cpp          # Forked server implementation
+├── serverthread.cpp        # Threaded server implementation
+├── dcollect.sh             # Script for data collection
+├── regression_analysis.py  # Python script for performance prediction
+├── Makefile                # For compiling the project
+├── .gitignore              # Ignored files
+├── small                   # Test file used for server load testing
+├── big                     # Larger test file used for load testing
+├── README.md               # Project documentation
+└── statistics.png          # Performance comparison plot
+```
 
-dcollect.sh does a couple of important tasks.
- 1) Verify that your servers can serve basic content. This is done by sending a random string into
-    the file randomFile. Then it verifies that it can download this file from your server, using CURL.
-    Hence, your server needs to be good enough that CURL can work with it. If this fails, the script
-    exits with an 'ERROR' statement.
- 2) Verifies that your server can serve any file. This is done by creating a randomly name file
-    in the same folder as the script, and servers, are executing. It then again uses CURL to verify
-    that it can download that randomly named file, from your servers. If it can, the scrip exits with
-    an 'ERROR' statement.
- 3) Collects data, calculates statistics, and renders a graph (statistics.png) regarding performance.
-    As mentioned before there are two modes, testing (testing=1) and real (testing=0).
-    If there are any problems during the data collection, the scrip exits with an 'ERROR' statment.
+## Features
+- **Forked Server (`serverfork.cpp`)**: Uses a separate process to handle each client request.
+- **Threaded Server (`serverthread.cpp`)**: Uses threads to handle multiple client requests concurrently.
+- **Data Collection (`dcollect.sh`)**: Automates testing of both server types and logs performance metrics.
+- **Performance Analysis (`regression_analysis.py`)**: Performs predictive analysis using linear regression on collected data to model server performance at higher concurrency levels.
 
-If the script works, and no problems were encountered the script will print
-   "SUMMARY: Did it work?"
-This only tells us that the script completed it execution, and it was NOT aborted due to some errors.
-At that point I recommend that you investigate the generated graph, statistics.png. That the script
-completed, is NOT an garantee that you will pass the assignment. If the script exits with an 'ERROR'
-statement, that is a garantee that you will NOT pass. So, you better fix the issue. 
+## Getting Started
 
+### Prerequisites
+- C++ compiler (e.g., `g++`)
+- Python 3.x with `matplotlib` and `scikit-learn`
+- ApacheBench (`ab`) for load testing
 
-If you just want to test HOW the dcollect.sh works, you can use 'php' to run a small webserver
-in a specific folder. Just start it as;
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone git@github.com:prajna-7/np_assignment4_web.git
+   cd np_assignment4_web
+   ```
 
-   host:~/$ php -S 127.0.0.0:<port>
+2. Compile the servers using the `Makefile`:
+   ```bash
+   make
+   ```
 
-Replace <port> with the port you want it too listen to. As the script expects both servers to be
-operational you need to start two separate instances, on different ports.
+### Running the Servers
+- **Forked server**:
+   ```bash
+   ./serverfork <ip>:<port>
+   ```
 
-For a point of reference, it took my host approximately 23 minutes to collect all the raw data, and
-it took 40s to collect the test data. My host is a AMD Ryzen 5950x, 64Gbyte of RAM and 1Tbyte NVMe storage. 
+- **Threaded server**:
+   ```bash
+   ./serverthread <ip>:<port>
+   ```
 
+### Data Collection and Testing
+To collect performance data, run the `dcollect.sh` script:
+```bash
+./dcollect.sh
+```
+This script performs basic server testing and measures performance using different concurrency levels.
 
+### Performance Prediction
+To generate performance predictions and analysis, run the Python script:
+```bash
+python3 regression_analysis.py
+```
+This will generate a plot comparing the actual and predicted performance of both server types and save it as `Linear_Regression_analysis.png`.
+
+## Performance Analysis
+The project analyzes the performance of both server types at varying levels of concurrency. The threaded server outperforms the forked server at higher concurrency, but exhibits variability as concurrency increases. The linear regression analysis provides a general prediction of server behavior up to a concurrency level of 60.
+
+## Future Improvements
+- Implement additional predictive models like polynomial regression or neural networks for more accurate predictions.
+- Further optimization of the threaded server to reduce performance variability at high concurrency.
 
 
